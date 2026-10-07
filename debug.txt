@@ -1,0 +1,1 @@
+{"status":true,"message":"Vehicle details added successfully!","token":"6abbaaa3e7b8c","url":"http%3A%2F%2Flocalhost%3A4500%2Findex.php%2Ftrack%2F6abbaaa3e7b8c"}

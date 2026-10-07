@@ -1,0 +1,160 @@
+/* *{
+    margin: 0;
+    padding: 0;
+}
+.rate {
+    float: left;
+    height: 46px;
+    padding: 0 10px;
+}
+.rate:not(:checked) > input {
+    position:absolute;
+    top:-9999px;
+}
+.rate:not(:checked) > label {
+    float:right;
+    width:1em;
+    overflow:hidden;
+    white-space:nowrap;
+    cursor:pointer;
+    font-size:30px;
+    color:#ccc;
+}
+.rate:not(:checked) > label:before {
+    content: '★ ';
+}
+.rate > input:checked ~ label {
+    color: #ffc700;    
+}
+.rate:not(:checked) > label:hover,
+.rate:not(:checked) > label:hover ~ label {
+    color: #deb217;  
+}
+.rate > input:checked + label:hover,
+.rate > input:checked + label:hover ~ label,
+.rate > input:checked ~ label:hover,
+.rate > input:checked ~ label:hover ~ label,
+.rate > label:hover ~ input:checked ~ label {
+    color: #c59b08;
+}   */
+
+* {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .col-lg-12 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .rate {
+    display: flex;
+    flex-direction: row-reverse; /* Reverse the order of stars */
+    height: 46px;
+    /* height: 80px; */
+    padding: 0 10px;
+  }
+  
+  .rate:not(:checked) > input {
+    position: absolute;
+    top: -9999px;
+  }
+  
+  .rate:not(:checked) > label {
+    width: auto;
+    overflow: hidden;
+    white-space: nowrap;
+    cursor: pointer;
+    /* font-size: 30px; */
+    font-size: 35px;
+    color: #afa26f;
+    opacity: 40%;
+  }
+  .rate > input:checked ~ label {
+    color: #FDCC0D; /* Use #05141f (dark blue) for checked stars */
+    opacity: 1; /* Set opacity to 100% for checked stars */
+  }
+
+  .rate:not(:checked) > label:hover,
+  .rate:not(:checked) > label:hover ~ label {
+    color: #FDCC0D; /* Use #05141f (dark blue) for hovered unchecked stars */
+    opacity: 0.6; /* Set opacity to 60% for hovered unchecked stars */
+  }
+  .feedback{
+    width: 95%;
+  }
+
+  /* Media query for larger screens (e.g., tablets or desktops) */
+  @media screen and (min-width: 769px) {
+    .rate:not(:checked) > label {
+      font-size: 40px; /* Double the font size for larger screens */
+    }
+    .rate { 
+      height: 72px; 
+    }
+    .feedback{
+      width: auto;
+    }
+  }
+
+/* Media query for even larger screens (e.g., large desktops) */
+@media screen and (min-width: 1200px) {
+  .rate:not(:checked) > label {
+    font-size: 60px; /* Triple the font size for even larger screens */
+  }
+  .rate { 
+    height: 96px; 
+  }
+  .feedback{
+    width: auto;
+  }
+}
+
+  
+  .rate:not(:checked) > label:before {
+    content: '★ ';
+  }
+  
+  /* .rate > input:checked ~ label {
+    color: #ffc700;
+  }
+  
+  .rate:not(:checked) > label:hover,
+  .rate:not(:checked) > label:hover ~ label {
+    color: #deb217;
+  } */
+  
+  .rate > input:checked + label:hover,
+  .rate > input:checked + label:hover ~ label,
+  .rate > input:checked ~ label:hover,
+  .rate > input:checked ~ label:hover ~ label,
+  .rate > label:hover ~ input:checked ~ label {
+    color: #FDCC0D;
+    opacity: 1;
+  }
+
+  /* Add style to the input box border */
+input[type="text"] {
+    border: 1px solid #05141f;
+    padding: 5px;
+    border-radius: 4px;
+  }
+  
+  /* Add style to the button border */
+  button {
+    border: 1px solid #05141f;
+    padding: 8px 25px;
+    background-color: #05141f;
+    color: #fff;
+    border-radius: 0px;
+    cursor: pointer;
+  }
+  
+  /* Adjust button style on hover */
+  button:hover {
+    background-color: #05141f;
+    text-decoration-line: underline;
+  }
+/* Modified from: https://github.com/mukulkant/Star-rating-using-pure-css */
