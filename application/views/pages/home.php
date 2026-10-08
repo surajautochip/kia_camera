@@ -475,59 +475,41 @@
 
 
 
-    if (Hls.isSupported()) {
-
-        var hls1 = new Hls();
-        //          hls.loadSource('https://video-dev.github.io/streams/x36xhzz/x36xhzz.m3u8');
-        hls1.loadSource('http://' + cam_server + (cam_server.includes(':8088') && !cam_server.includes('/streams') ? '/streams/' : '/') + dir_name + '/' + bay_name + '/stream1.m3u8');
-        hls1.attachMedia(video1);
-        hls1.on(Hls.Events.MANIFEST_PARSED, function() {
-            video1.muted = true; video1.play();
-        });
-
-
-        var hls2 = new Hls();
-        //          hls.loadSource('ss://video-dev.github.io/streams/x36xhzz/x36xhzz.m3u8');
-        hls2.loadSource('http://' + cam_server + (cam_server.includes(':8088') && !cam_server.includes('/streams') ? '/streams/' : '/') + dir_name + '/' + bay_name + '/stream2.m3u8');
-        hls2.attachMedia(video2);
-        hls2.on(Hls.Events.MANIFEST_PARSED, function() {
-            video2.muted = true; video2.play();
-
-        });
-
-        //                     var video3 = document.getElementById('stream3');
-        //           var hls3 = new Hls();
-        // //          hls.loadSource('https://video-dev.github.io/streams/x36xhzz/x36xhzz.m3u8');
-        //         hls3.loadSource('http://103.226.0.202:4500/live/stream3.m3u8');
-        //           hls3.attachMedia(video3);
-        //           hls3.on(Hls.Events.MANIFEST_PARSED,function() {
-        //             video3.play();
-
-        //     });
-
+     if (Hls.isSupported()) {
+        if (video1) {
+            var hls1 = new Hls();
+            hls1.loadSource('http://' + cam_server + (cam_server.includes(':8088') && !cam_server.includes('/streams') ? '/streams/' : '/') + dir_name + '/' + bay_name + '/stream1.m3u8');
+            hls1.attachMedia(video1);
+            hls1.on(Hls.Events.MANIFEST_PARSED, function() {
+                video1.muted = true; video1.play();
+            });
+        }
+        if (video2) {
+            var hls2 = new Hls();
+            hls2.loadSource('http://' + cam_server + (cam_server.includes(':8088') && !cam_server.includes('/streams') ? '/streams/' : '/') + dir_name + '/' + bay_name + '/stream2.m3u8');
+            hls2.attachMedia(video2);
+            hls2.on(Hls.Events.MANIFEST_PARSED, function() {
+                video2.muted = true; video2.play();
+            });
+        }
         setTimeout(function() {
-            video1.muted = true; video1.play();
-            video2.muted = true; video2.play();
+            if(video1) { video1.muted = true; video1.play(); }
+            if(video2) { video2.muted = true; video2.play(); }
         }, 5000);
-
-
-
     }
-    // hls.js is not supported on platforms that do not have Media Source Extensions (MSE) enabled.
-    // When the browser has built-in HLS support (check using `canPlayType`), we can provide an HLS manifest (i.e. .m3u8 URL) directly to the video element throught the `src` property.
-    // This is using the built-in support of the plain video element, without using hls.js.
-    else if (video1.canPlayType('application/vnd.apple.mpegurl')) {
-        video1.src = 'http://' + cam_server + (cam_server.includes(':8088') && !cam_server.includes('/streams') ? '/streams/' : '/') + dir_name + '/' + bay_name + '/stream1.m3u8';
-        video2.src = 'http://' + cam_server + (cam_server.includes(':8088') && !cam_server.includes('/streams') ? '/streams/' : '/') + dir_name + '/' + bay_name + '/stream2.m3u8';
-        video1.addEventListener('canplay', function() {
-            video1.muted = true; video1.play();
-        });
-        video2.addEventListener('canplay', function() {
-            video2.muted = true; video2.play();
-        });
+    else if (video1 && video1.canPlayType('application/vnd.apple.mpegurl')) {
+        if(video1) {
+            video1.src = 'http://' + cam_server + (cam_server.includes(':8088') && !cam_server.includes('/streams') ? '/streams/' : '/') + dir_name + '/' + bay_name + '/stream1.m3u8';
+            video1.addEventListener('canplay', function() { video1.muted = true; video1.play(); });
+        }
+        if(video2) {
+            video2.src = 'http://' + cam_server + (cam_server.includes(':8088') && !cam_server.includes('/streams') ? '/streams/' : '/') + dir_name + '/' + bay_name + '/stream2.m3u8';
+            video2.addEventListener('canplay', function() { video2.muted = true; video2.play(); });
+        }
     } else {
         console.log("Nothing Supported")
     }
+
 
     if(video1){
         video1.onpause = function() {

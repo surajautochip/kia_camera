@@ -14,15 +14,14 @@ const streamsBaseDir = path.join(__dirname, '..', 'streams');
 const activeStreams = {};
 
 app.get('/start', (req, res) => {
+    // Extract BAY along with dirPath
     const { path: dirPath, BAY, name, RTSP_URL } = req.query;
-
     if (!dirPath || !BAY || !name || !RTSP_URL) {
         return res.status(400).send("Missing required query parameters");
     }
-
+    // Include BAY in the directory path
     const streamDir = path.join(streamsBaseDir, dirPath, BAY);
     const m3u8Path = path.join(streamDir, `${name}.m3u8`);
-
     // Create the directory if it doesn't exist
     if (!fs.existsSync(streamDir)) {
         fs.mkdirSync(streamDir, { recursive: true });
