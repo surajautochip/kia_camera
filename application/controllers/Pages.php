@@ -144,8 +144,9 @@ class Pages extends CI_Controller {
 	public function getFeedback(){
 		$curl = curl_init();
 		$token 	= $this->input->get('token', TRUE);
+		$odoo_url = 'http://192.168.101.111:8079'; // CHANGE THIS TO YOUR SERVER ODOO URL IF DIFFERENT
 		curl_setopt_array($curl, array(
-			CURLOPT_URL => 'http://localhost:8069/live/customer/review',
+			CURLOPT_URL => $odoo_url . '/live/customer/review',
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => '',
 			CURLOPT_MAXREDIRS => 10,
@@ -153,7 +154,7 @@ class Pages extends CI_Controller {
 			CURLOPT_FOLLOWLOCATION => true,
 			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 			CURLOPT_CUSTOMREQUEST => 'POST',
-			CURLOPT_POSTFIELDS =>'{"token":"'.$token.'"}',
+			CURLOPT_POSTFIELDS =>'{"params": {"token":"'.$token.'"} }',
 			CURLOPT_HTTPHEADER => array(
 				'Content-Type: application/json',
 				'Cookie: frontend_lang=en_US; session_id=9518f673b93d2e3aa18e52282ee4c65c76b1f2f1'
@@ -170,8 +171,9 @@ class Pages extends CI_Controller {
 		$token 	= $this->input->get('token', TRUE);
 		$count 	= $this->input->get('count', TRUE);
 		$fdbk 	= $this->input->get('feedback', TRUE);
+		$odoo_url = 'http://192.168.101.111:8079'; // CHANGE THIS TO YOUR SERVER ODOO URL IF DIFFERENT (e.g., 'http://localhost:8079')
 		curl_setopt_array($curl, array(
-			CURLOPT_URL => 'http://localhost:8069/live/customer/review',
+			CURLOPT_URL => $odoo_url . '/live/customer/review',
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => '',
 			CURLOPT_MAXREDIRS => 10,
@@ -179,10 +181,7 @@ class Pages extends CI_Controller {
 			CURLOPT_FOLLOWLOCATION => true,
 			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 			CURLOPT_CUSTOMREQUEST => 'POST',
-			CURLOPT_POSTFIELDS =>'{"token":"'.$token.'",
-				"review":"'.$count.'",
-				"feedback":"'.$fdbk.'"
-			}',
+			CURLOPT_POSTFIELDS =>'{"params": {"token":"'.$token.'", "review":"'.$count.'", "feedback":"'.$fdbk.'"} }',
 			CURLOPT_HTTPHEADER => array(
 				'Content-Type: application/json',
 				'Cookie: frontend_lang=en_US; session_id=9518f673b93d2e3aa18e52282ee4c65c76b1f2f1'
@@ -197,8 +196,9 @@ class Pages extends CI_Controller {
 	public function getStages(){
 		$curl = curl_init();
 		$token 	= $this->input->get('token', TRUE);
+		$odoo_url = 'http://192.168.101.111:8079'; // CHANGE THIS TO YOUR SERVER ODOO URL IF DIFFERENT
 		curl_setopt_array($curl, array(
-			CURLOPT_URL => 'http://localhost:8069/live/token/stages',
+			CURLOPT_URL => $odoo_url . '/live/token/stages',
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => '',
 			CURLOPT_MAXREDIRS => 10,
@@ -206,7 +206,7 @@ class Pages extends CI_Controller {
 			CURLOPT_FOLLOWLOCATION => true,
 			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 			CURLOPT_CUSTOMREQUEST => 'POST',
-			CURLOPT_POSTFIELDS =>'{"token":"'.$token.'"}',
+			CURLOPT_POSTFIELDS =>'{"params": {"token":"'.$token.'"} }',
 			CURLOPT_HTTPHEADER => array(
 				'Content-Type: application/json',
 				'Cookie: frontend_lang=en_US; session_id=9518f673b93d2e3aa18e52282ee4c65c76b1f2f1'
@@ -221,8 +221,9 @@ class Pages extends CI_Controller {
 	public function stopStreaming(){
 		$curl = curl_init();
 		$token 	= $this->input->get('token', TRUE); 
+		$odoo_url = 'http://192.168.101.111:8079'; // CHANGE THIS TO YOUR SERVER ODOO URL IF DIFFERENT
 		curl_setopt_array($curl, array(
-			CURLOPT_URL => 'http://localhost:8069/dms/live/stream/stop',
+			CURLOPT_URL => $odoo_url . '/dms/live/stream/stop',
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => '',
 			CURLOPT_MAXREDIRS => 10,
@@ -230,7 +231,7 @@ class Pages extends CI_Controller {
 			CURLOPT_FOLLOWLOCATION => true,
 			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 			CURLOPT_CUSTOMREQUEST => 'POST',
-			CURLOPT_POSTFIELDS =>'{"token":"'.$token.'"}',
+			CURLOPT_POSTFIELDS =>'{"params": {"token":"'.$token.'"}}',
 			CURLOPT_HTTPHEADER => array(
 				'Content-Type: application/json',
 				'Cookie: frontend_lang=en_US; session_id=9518f673b93d2e3aa18e52282ee4c65c76b1f2f1'
@@ -256,8 +257,9 @@ class Pages extends CI_Controller {
 			"token" => $token,
 		];
 		$curl = curl_init(); 
+		$odoo_url = 'http://192.168.101.111:8079'; // CHANGE THIS TO YOUR SERVER ODOO URL IF DIFFERENT
 		curl_setopt_array($curl, array(
-			CURLOPT_URL => 'http://localhost:8069/api/no_view_receive',
+			CURLOPT_URL => $odoo_url . '/api/no_view_receive',
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => '',
 			CURLOPT_MAXREDIRS => 10,
@@ -296,8 +298,9 @@ class Pages extends CI_Controller {
 			"session_id" => $session_id,
 		];
 		$curl = curl_init(); 
+		$odoo_url = 'http://192.168.101.111:8079'; // CHANGE THIS TO YOUR SERVER ODOO URL IF DIFFERENT
 		curl_setopt_array($curl, array(
-			CURLOPT_URL => 'http://localhost:8069/api/no_view_receive',
+			CURLOPT_URL => $odoo_url . '/api/no_view_receive',
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => '',
 			CURLOPT_MAXREDIRS => 10,
@@ -320,8 +323,9 @@ class Pages extends CI_Controller {
 		$curl = curl_init();
 		$token 	= $this->input->get('token', TRUE);
 
+		$odoo_url = 'http://192.168.101.111:8079'; // CHANGE THIS TO YOUR SERVER ODOO URL IF DIFFERENT
 		curl_setopt_array($curl, array(
-			CURLOPT_URL => 'http://localhost:8069/live/token/product/components',
+			CURLOPT_URL => $odoo_url . '/live/token/product/components',
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => '',
 			CURLOPT_MAXREDIRS => 10,
@@ -329,7 +333,7 @@ class Pages extends CI_Controller {
 			CURLOPT_FOLLOWLOCATION => true,
 			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 			CURLOPT_CUSTOMREQUEST => 'POST',
-			CURLOPT_POSTFIELDS =>'{"token":"'.$token.'"}',
+			CURLOPT_POSTFIELDS =>'{"params": {"token":"'.$token.'"} }',
 			CURLOPT_HTTPHEADER => array(
 				'Content-Type: application/json',
 				'Cookie: frontend_lang=en_US; session_id=9518f673b93d2e3aa18e52282ee4c65c76b1f2f1'
@@ -387,4 +391,5 @@ class Pages extends CI_Controller {
 		}
 	}
 }
+
 

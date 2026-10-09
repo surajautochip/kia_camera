@@ -463,7 +463,12 @@
                 cache: false,
                 data: {},
                 success: function(result) {
-                    var res = JSON.parse(result['message'])                     
+                    var res = JSON.parse(result['message']);
+                    if(res && res.result && res.result.status == 200) {
+                        location.reload();
+                    } else {
+                        location.reload();
+                    }
                 }
             });
             
@@ -701,7 +706,7 @@
 
     
         function updateOdooBackendStatus(status) {
-        var server_ip = $('#ip').val().split(":")[0] + ":8069";
+        var server_ip = "192.168.101.111:8079";
         var token = $('#token').val();
         var payload = {
             "token": token,
