@@ -270,6 +270,9 @@
 
     <input type="hidden" name="ip" id="ip" value="<?=$dealer['web_server_ip']?>">
     <input type="hidden" name="odoo_server_ip" id="odoo_server_ip" value="192.168.101.111:8079">
+    <input type="hidden" name="odoo_db" id="odoo_db" value="kia_ars">
+    <input type="hidden" name="odoo_user" id="odoo_user" value="admin">
+    <input type="hidden" name="odoo_password" id="odoo_password" value="admin">
     <input type="hidden" name="dir_name" id="dir_name" value="<?=$dealer['dir_name']?>">
     <input type="hidden" name="bay_name" id="bay_name" value="<?=$vehicle['bay_name']?>">
     <input type="hidden" name="cam_server" id="cam_server" value="<?=$dealer['cam_server']?>">
@@ -485,7 +488,13 @@
             hls1.loadSource('http://' + cam_server + (cam_server.includes(':8088') && !cam_server.includes('/streams') ? '/streams/' : '/') + dir_name + '/' + bay_name + '/stream1.m3u8');
             hls1.attachMedia(video1);
             hls1.on(Hls.Events.MANIFEST_PARSED, function() {
-                video1.muted = true; video1.play();
+                if (window.backend_action_state !== 'hold') {
+                    video1.muted = true; video1.play();
+                } else {
+                    video1.pause();
+                    $("#play_all").show();
+                    $("#pause_all").hide();
+                }
             });
         }
         if (video2) {
@@ -493,22 +502,51 @@
             hls2.loadSource('http://' + cam_server + (cam_server.includes(':8088') && !cam_server.includes('/streams') ? '/streams/' : '/') + dir_name + '/' + bay_name + '/stream2.m3u8');
             hls2.attachMedia(video2);
             hls2.on(Hls.Events.MANIFEST_PARSED, function() {
-                video2.muted = true; video2.play();
+                if (window.backend_action_state !== 'hold') {
+                    video2.muted = true; video2.play();
+                } else {
+                    video2.pause();
+                    $("#play_all").show();
+                    $("#pause_all").hide();
+                }
             });
         }
         setTimeout(function() {
-            if(video1 && !video1.paused) { video1.muted = true; video1.play(); }
-            if(video2 && !video2.paused) { video2.muted = true; video2.play(); }
+            if (window.backend_action_state !== 'hold') {
+                if(video1 && !video1.paused) { video1.muted = true; video1.play(); }
+                if(video2 && !video2.paused) { video2.muted = true; video2.play(); }
+            } else {
+                if (video1) video1.pause();
+                if (video2) video2.pause();
+                $("#play_all").show();
+                $("#pause_all").hide();
+            }
         }, 5000);
     }
     else if (video1 && video1.canPlayType('application/vnd.apple.mpegurl')) {
         if(video1) {
             video1.src = 'http://' + cam_server + (cam_server.includes(':8088') && !cam_server.includes('/streams') ? '/streams/' : '/') + dir_name + '/' + bay_name + '/stream1.m3u8';
-            video1.addEventListener('canplay', function() { video1.muted = true; video1.play(); });
+            video1.addEventListener('canplay', function() {
+                if (window.backend_action_state !== 'hold') {
+                    video1.muted = true; video1.play();
+                } else {
+                    video1.pause();
+                    $("#play_all").show();
+                    $("#pause_all").hide();
+                }
+            });
         }
         if(video2) {
             video2.src = 'http://' + cam_server + (cam_server.includes(':8088') && !cam_server.includes('/streams') ? '/streams/' : '/') + dir_name + '/' + bay_name + '/stream2.m3u8';
-            video2.addEventListener('canplay', function() { video2.muted = true; video2.play(); });
+            video2.addEventListener('canplay', function() {
+                if (window.backend_action_state !== 'hold') {
+                    video2.muted = true; video2.play();
+                } else {
+                    video2.pause();
+                    $("#play_all").show();
+                    $("#pause_all").hide();
+                }
+            });
         }
     } else {
         console.log("Nothing Supported")
@@ -517,25 +555,37 @@
 
     if(video1){
         video1.onpause = function() {
-            $("#play_all").show()
-            $("#pause_all").hide()
+            $("#play_all").show();
+            $("#pause_all").hide();
         };
 
         video1.onplay = function() {
-            $("#play_all").hide()
-            $("#pause_all").show()
+            if (window.backend_action_state === 'hold') {
+                video1.pause();
+                $("#play_all").show();
+                $("#pause_all").hide();
+                return;
+            }
+            $("#play_all").hide();
+            $("#pause_all").show();
         };
     }
 
     if(video2){
         video2.onpause = function() {
-            $("#play_all").show()
-            $("#pause_all").hide()
+            $("#play_all").show();
+            $("#pause_all").hide();
         };
 
         video2.onplay = function() {
-            $("#play_all").hide()
-            $("#pause_all").show()
+            if (window.backend_action_state === 'hold') {
+                video2.pause();
+                $("#play_all").show();
+                $("#pause_all").hide();
+                return;
+            }
+            $("#play_all").hide();
+            $("#pause_all").show();
         };
     }
 
@@ -706,15 +756,13 @@
     
     function updateOdooBackendStatus(status) {
         var server_ip = "";
-        if ($('#odoo_server_ip').length && $('#odoo_server_ip').val()) {
+        if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+            server_ip = window.location.hostname + ":8069";
+        } else if ($('#odoo_server_ip').length && $('#odoo_server_ip').val()) {
             server_ip = $('#odoo_server_ip').val().trim();
         } else if ($('#ip').val()) {
             var host = $('#ip').val().split(":")[0];
-            if (host === "localhost" || host === "127.0.0.1") {
-                server_ip = host + ":8069";
-            } else {
-                server_ip = host + ":8079";
-            }
+            server_ip = host + ":8079";
         } else {
             server_ip = "192.168.101.111:8079";
         }

@@ -12,18 +12,23 @@
 			
         $(document).ready(function () {
 
-            if ($('#odoo_server_ip').length && $('#odoo_server_ip').val()) {
+            var is_local = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+
+            if (is_local) {
+                server_ip = window.location.hostname + ":8069";
+            } else if ($('#odoo_server_ip').length && $('#odoo_server_ip').val()) {
                 server_ip = $('#odoo_server_ip').val().trim();
             } else if ($('#ip').val()) {
                 var host = $('#ip').val().split(":")[0];
-                if (host === "localhost" || host === "127.0.0.1") {
-                    server_ip = host + ":8069";
-                } else {
-                    server_ip = host + ":8079";
-                }
+                server_ip = host + ":8079";
             } else {
                 server_ip = "192.168.101.111:8079";
             }
+
+            odoo_db = ($('#odoo_db').length && $('#odoo_db').val()) ? $('#odoo_db').val().trim() : (is_local ? "kia_test" : "kia_ars");
+            odoo_user = ($('#odoo_user').length && $('#odoo_user').val()) ? $('#odoo_user').val().trim() : (is_local ? "kia@gmail.com" : "admin");
+            odoo_pass = ($('#odoo_password').length && $('#odoo_password').val()) ? $('#odoo_password').val().trim() : (is_local ? "kia" : "admin");
+
             token = $('#token').val();
             token_status = $('#token_status').val();
 
@@ -50,9 +55,9 @@
             console.log(timeFormat(start_time))
 
             payload = {
-                "db": "kia_test",
-                "user": "kia@gmail.com",
-                "password": "kia",
+                "db": odoo_db,
+                "user": odoo_user,
+                "password": odoo_pass,
                 "token": token,
                 "start_time": timeFormat(start_time)
             }
@@ -84,9 +89,9 @@
 			
 			last_ping_time = current_ping_time
             payload = {
-                "db": "kia_test",
-                "user": "kia@gmail.com",
-                "password": "kia",
+                "db": odoo_db,
+                "user": odoo_user,
+                "password": odoo_pass,
                 "token": token,
                 "session_id": session_id,
                 "start_time": timeFormat(start_time),
@@ -120,10 +125,19 @@
             if (!action || action === window.backend_action_state) return;
             window.backend_action_state = action;
             
+            var video1 = document.getElementById('stream1');
+            var video2 = document.getElementById('stream2');
+            
             if (action === 'hold') {
-                $("#pause_all").trigger("click", ["backend"]);
+                if (video1) video1.pause();
+                if (video2) video2.pause();
+                $("#pause_all").hide();
+                $("#play_all").show();
             } else if (action === 'live') {
-                $("#play_all").trigger("click", ["backend"]);
+                if (video1) { video1.muted = true; video1.play(); }
+                if (video2) { video2.muted = true; video2.play(); }
+                $("#play_all").hide();
+                $("#pause_all").show();
             } else if (action === 'completed') {
                 $("#stop_all").trigger("click", ["backend"]);
             }
