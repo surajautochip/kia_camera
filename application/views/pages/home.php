@@ -269,6 +269,7 @@
     <div class="full-screen-overlay"></div>
 
     <input type="hidden" name="ip" id="ip" value="<?=$dealer['web_server_ip']?>">
+    <input type="hidden" name="odoo_server_ip" id="odoo_server_ip" value="192.168.101.111:8079">
     <input type="hidden" name="dir_name" id="dir_name" value="<?=$dealer['dir_name']?>">
     <input type="hidden" name="bay_name" id="bay_name" value="<?=$vehicle['bay_name']?>">
     <input type="hidden" name="cam_server" id="cam_server" value="<?=$dealer['cam_server']?>">
