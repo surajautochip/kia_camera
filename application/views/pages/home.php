@@ -435,8 +435,6 @@
     $("#play_all").click(function(event, type) {
         if (video1) video1.play();
         if (video2) video2.play();
-        overlay.style.display = 'none';
-        fullScreenOverlay.style.display = 'none';
         $("#play_all").hide();
         $("#pause_all").show();
 
@@ -448,8 +446,6 @@
     $("#pause_all").click(function(event, type) {
         if (video1) video1.pause();
         if (video2) video2.pause();
-        overlay.style.display = 'block';
-        fullScreenOverlay.style.display = 'block';
         $("#pause_all").hide();
         $("#play_all").show();
 
@@ -501,10 +497,8 @@
             });
         }
         setTimeout(function() {
-            if (overlay.style.display !== 'block') {
-                if(video1) { video1.muted = true; video1.play(); }
-                if(video2) { video2.muted = true; video2.play(); }
-            }
+            if(video1 && !video1.paused) { video1.muted = true; video1.play(); }
+            if(video2 && !video2.paused) { video2.muted = true; video2.play(); }
         }, 5000);
     }
     else if (video1 && video1.canPlayType('application/vnd.apple.mpegurl')) {
