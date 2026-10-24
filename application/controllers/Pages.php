@@ -243,6 +243,32 @@ class Pages extends CI_Controller {
 		return send_json_response(array("status" => true, "message" => $response));
 	}
 
+	public function pauseStreaming(){
+		$curl = curl_init();
+		$token 	= $this->input->get('token', TRUE); 
+		$status = $this->input->get('status', TRUE);
+		if(!$status) { $status = 'hold'; }
+		$odoo_url = 'http://192.168.101.111:8079';
+		curl_setopt_array($curl, array(
+			CURLOPT_URL => $odoo_url . '/api/update_stream_status',
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_ENCODING => '',
+			CURLOPT_MAXREDIRS => 10,
+			CURLOPT_TIMEOUT => 5,
+			CURLOPT_FOLLOWLOCATION => true,
+			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+			CURLOPT_CUSTOMREQUEST => 'POST',
+			CURLOPT_POSTFIELDS => json_encode(array("token" => $token, "status" => $status)),
+			CURLOPT_HTTPHEADER => array(
+				'Content-Type: application/json',
+			),
+		));
+
+		$response = curl_exec($curl);
+		curl_close($curl); 
+		return send_json_response(array("status" => true, "message" => $response));
+	}
+
 	public function no_view_receive(){
 		$start_time = $this->input->post('start_time', TRUE);
 		$token = $this->input->post('token', TRUE);

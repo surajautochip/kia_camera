@@ -269,6 +269,7 @@
     <div class="full-screen-overlay"></div>
 
     <input type="hidden" name="ip" id="ip" value="<?=$dealer['web_server_ip']?>">
+    <input type="hidden" name="odoo_server_ip" id="odoo_server_ip" value="192.168.101.111:8079">
     <input type="hidden" name="dir_name" id="dir_name" value="<?=$dealer['dir_name']?>">
     <input type="hidden" name="bay_name" id="bay_name" value="<?=$vehicle['bay_name']?>">
     <input type="hidden" name="cam_server" id="cam_server" value="<?=$dealer['cam_server']?>">
@@ -432,10 +433,10 @@
 
     // $(document).ready(function() {
     $("#play_all").click(function(event, type) {
-        if (video1) video1.play()
-        if (video2) video2.play()
-        overlay.style.display = 'none';
-        fullScreenOverlay.style.display = 'none';
+        if (video1) video1.play();
+        if (video2) video2.play();
+        $("#play_all").hide();
+        $("#pause_all").show();
 
         if (type !== 'backend') {
             updateOdooBackendStatus('live');
@@ -445,12 +446,10 @@
     $("#pause_all").click(function(event, type) {
         if (video1) video1.pause();
         if (video2) video2.pause();
-        if(type == 'auto'){
-            overlay.style.display = 'block';
-            fullScreenOverlay.style.display = 'block';
-        }
+        $("#pause_all").hide();
+        $("#play_all").show();
 
-        if (type !== 'backend' && type !== 'auto') {
+        if (type !== 'backend') {
             updateOdooBackendStatus('hold');
         }
     })
@@ -498,8 +497,8 @@
             });
         }
         setTimeout(function() {
-            if(video1) { video1.muted = true; video1.play(); }
-            if(video2) { video2.muted = true; video2.play(); }
+            if(video1 && !video1.paused) { video1.muted = true; video1.play(); }
+            if(video2 && !video2.paused) { video2.muted = true; video2.play(); }
         }, 5000);
     }
     else if (video1 && video1.canPlayType('application/vnd.apple.mpegurl')) {
@@ -705,13 +704,33 @@
     });
 
     
-        function updateOdooBackendStatus(status) {
-        var server_ip = "192.168.101.111:8079";
+    function updateOdooBackendStatus(status) {
+        var server_ip = "";
+        if ($('#odoo_server_ip').length && $('#odoo_server_ip').val()) {
+            server_ip = $('#odoo_server_ip').val().trim();
+        } else if ($('#ip').val()) {
+            var host = $('#ip').val().split(":")[0];
+            if (host === "localhost" || host === "127.0.0.1") {
+                server_ip = host + ":8069";
+            } else {
+                server_ip = host + ":8079";
+            }
+        } else {
+            server_ip = "192.168.101.111:8079";
+        }
         var token = $('#token').val();
         var payload = {
             "token": token,
             "status": status
         };
+        $.ajax({
+            url: "/index.php/pauseStreaming?token=" + encodeURIComponent(token) + "&status=" + encodeURIComponent(status),
+            cache: false,
+            data: {},
+            success: function(res) {
+                console.log("PHP pauseStreaming proxy response:", res);
+            }
+        });
         $.ajax({
             type: 'POST',
             url: 'http://' + server_ip + '/api/update_stream_status',

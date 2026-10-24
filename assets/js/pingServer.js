@@ -12,7 +12,18 @@
 			
         $(document).ready(function () {
 
-            server_ip = $('#ip').val().split(":")[0] + ":8069"
+            if ($('#odoo_server_ip').length && $('#odoo_server_ip').val()) {
+                server_ip = $('#odoo_server_ip').val().trim();
+            } else if ($('#ip').val()) {
+                var host = $('#ip').val().split(":")[0];
+                if (host === "localhost" || host === "127.0.0.1") {
+                    server_ip = host + ":8069";
+                } else {
+                    server_ip = host + ":8079";
+                }
+            } else {
+                server_ip = "192.168.101.111:8079";
+            }
             token = $('#token').val();
             token_status = $('#token_status').val();
 
