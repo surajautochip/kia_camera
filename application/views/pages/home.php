@@ -483,31 +483,76 @@
 
 
      if (Hls.isSupported()) {
+        var hlsConfig = {
+            manifestLoadingMaxRetry: 30,
+            manifestLoadingRetryDelay: 1000,
+            manifestLoadingMaxRetryTimeout: 60000,
+            levelLoadingMaxRetry: 10,
+            fragLoadingMaxRetry: 10
+        };
         if (video1) {
-            var hls1 = new Hls();
-            hls1.loadSource('http://' + cam_server + (cam_server.includes(':8088') && !cam_server.includes('/streams') ? '/streams/' : '/') + dir_name + '/' + bay_name + '/stream1.m3u8');
+            var hls1 = new Hls(hlsConfig);
+            var src1 = 'http://' + cam_server + (cam_server.includes(':8088') && !cam_server.includes('/streams') ? '/streams/' : '/') + dir_name + '/' + bay_name + '/stream1.m3u8';
+            hls1.loadSource(src1);
             hls1.attachMedia(video1);
             hls1.on(Hls.Events.MANIFEST_PARSED, function() {
                 if (window.backend_action_state !== 'hold') {
-                    video1.muted = true; video1.play();
+                    video1.muted = true;
+                    video1.play().catch(function(e) { console.log('play error:', e); });
                 } else {
                     video1.pause();
                     $("#play_all").show();
                     $("#pause_all").hide();
                 }
             });
+            hls1.on(Hls.Events.ERROR, function(event, data) {
+                if (data.fatal) {
+                    switch (data.type) {
+                        case Hls.ErrorTypes.NETWORK_ERROR:
+                            console.log("HLS1 network error, retrying...", data.details);
+                            setTimeout(function() { hls1.startLoad(); }, 1500);
+                            break;
+                        case Hls.ErrorTypes.MEDIA_ERROR:
+                            console.log("HLS1 media error, recovering...", data.details);
+                            hls1.recoverMediaError();
+                            break;
+                        default:
+                            setTimeout(function() { hls1.loadSource(src1); }, 2000);
+                            break;
+                    }
+                }
+            });
         }
         if (video2) {
-            var hls2 = new Hls();
-            hls2.loadSource('http://' + cam_server + (cam_server.includes(':8088') && !cam_server.includes('/streams') ? '/streams/' : '/') + dir_name + '/' + bay_name + '/stream2.m3u8');
+            var hls2 = new Hls(hlsConfig);
+            var src2 = 'http://' + cam_server + (cam_server.includes(':8088') && !cam_server.includes('/streams') ? '/streams/' : '/') + dir_name + '/' + bay_name + '/stream2.m3u8';
+            hls2.loadSource(src2);
             hls2.attachMedia(video2);
             hls2.on(Hls.Events.MANIFEST_PARSED, function() {
                 if (window.backend_action_state !== 'hold') {
-                    video2.muted = true; video2.play();
+                    video2.muted = true;
+                    video2.play().catch(function(e) { console.log('play error:', e); });
                 } else {
                     video2.pause();
                     $("#play_all").show();
                     $("#pause_all").hide();
+                }
+            });
+            hls2.on(Hls.Events.ERROR, function(event, data) {
+                if (data.fatal) {
+                    switch (data.type) {
+                        case Hls.ErrorTypes.NETWORK_ERROR:
+                            console.log("HLS2 network error, retrying...", data.details);
+                            setTimeout(function() { hls2.startLoad(); }, 1500);
+                            break;
+                        case Hls.ErrorTypes.MEDIA_ERROR:
+                            console.log("HLS2 media error, recovering...", data.details);
+                            hls2.recoverMediaError();
+                            break;
+                        default:
+                            setTimeout(function() { hls2.loadSource(src2); }, 2000);
+                            break;
+                    }
                 }
             });
         }
